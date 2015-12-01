@@ -20,6 +20,9 @@ default: &default
   # For details on connection pooling, see rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   pool: 5
+  host: db
+  username: postgres
+  password:
 
 development:
   <<: *default
@@ -81,5 +84,3 @@ test:
 production:
   <<: *default
   database: rails-docker-mac_production
-  username: rails-docker-mac
-  password: <%= ENV['RAILS-DOCKER-MAC_DATABASE_PASSWORD'] %>

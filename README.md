@@ -83,7 +83,7 @@ Now that you have a running Docker Machine and a Docker Compose setup for your a
 
 ## Next Steps
 
-To add other services, like a worker, Redis, or Mailcatcher, add new `docker-compose.yml` entries.
+To add other services, like a worker, Redis, or Mailcatcher, add new `docker-compose.yml` entries. If it's a common technology, you can usually find an image for it on [Docker Hub](https://hub.docker.com/). Its entry in your `docker-compose.yml` will look a lot like the `db` one: just pointing to an image.
 
 ## License
 

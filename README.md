@@ -48,6 +48,8 @@ Next you need to set up the Docker containers that your application needs. Note 
       image: postgres
     web:
       build: .
+      volumes:
+        - .:/usr/src/app
       ports:
         - "3000:3000"
       links:
@@ -59,6 +61,7 @@ Next you need to set up the Docker containers that your application needs. Note 
   - `db` and `web` are two different containers: one for running your database and another for your webapp.
   - `db` just has a single entry, `image`. This says to use a pre-built Docker image; in this case, `postgres`. As you can guess, this is a Docker image that runs the Postgres database server. [Details here.](https://hub.docker.com/_/postgres/)
   - Under `web`, `build` specifies that Docker should build a new image from the current directory. It uses the `Dockerfile` you set up in that directory.
+  - `volumes` mounts your project folder inside the container, so changes you make to the code show up immediately.
   - `ports` exposes ports to your host machine. In this case, we need to get access to port 3000 because that's where Rails will run.
   - `links` specifies other containers that this container should have access to. In this case, we want `web` to have access to `db` so it can use the database. It will be made available from the `web` container simply as the hostname `db`.
 

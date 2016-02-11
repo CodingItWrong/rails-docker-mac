@@ -22,7 +22,7 @@ First, you need to install Docker on your Mac. Specifically, you need to install
 
 - **Docker Machine**: to set up a virtual machine so you can run Docker on a Mac.
 - **Docker Compose**: to script out setting up multiple Docker containers your app will need.
-- **Vagrant and VirtualBox**: You'll need both of these as well. Docker Toolbox says it installs VirtualBox; it doesn't say whether it installs Vagrant. I already had both of those installed on my Mac so I can't say for sure. If you try this tutorial and run into an issue where you had to manually install one or both, [let me know](https://twitter.com/CodingItWrong)!
+- **VirtualBox**: runs the virtual machine Docker Machine sets up.
 
 The above installation is just a one-time thing, of course: once you've done this, you don't need to do it again, at least until Jony Ive releases a new thinner MacBook Pro.
 

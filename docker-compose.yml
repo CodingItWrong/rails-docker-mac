@@ -1,5 +1,9 @@
 db:
   image: postgres
+mailcatcher:
+  image: schickling/mailcatcher
+  ports:
+    - "1080:1080"
 web:
   build: .
   volumes:
@@ -8,3 +12,4 @@ web:
     - "3000:3000"
   links:
     - db
+    - mailcatcher

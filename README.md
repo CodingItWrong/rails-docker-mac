@@ -8,7 +8,7 @@ As a caveat, I have only very limitrd experience with Docker. There may be much 
 
 This tutorial was made with information from the following sources:
 
-- [Docker Machine - Getting Started](https://docs.docker.com/machine/get-started/)
+- [Docker for Mac - Getting Started](https://docs.docker.com/docker-for-mac/)
 - [Docker Compose - Rails Quickstart Guide](https://docs.docker.com/compose/rails/)
 - [RailsConf 2015 - DevOps for The Lazy](https://www.youtube.com/watch?v=CVO_imNSw2o) (video)
 
@@ -18,31 +18,18 @@ This assumes you already have a working Rails application that's `bundle install
 
 ### Install Docker
 
-First, you need to install Docker on your Mac. Specifically, you need to install the [Docker Toolbox](https://www.docker.com/docker-toolbox). This includes several tools you'll need:
+First, you need to install [Docker for Mac](https://docs.docker.com/docker-for-mac/). It's currently in public beta, but is much simpler than using the full release, which isn't optimized for Mac.
 
-- **Docker** itself.
-- **Docker Machine**: to set up a virtual machine so you can run Docker on a Mac. Docker itself only runs on Linux, so you need a virtual environment to run it on Mac. Docker Machine is the official way to do this.
-- **Docker Compose**: to script out setting up multiple Docker containers your app will need. Otherwise you'd need to start your app container and database container separately.
-- **VirtualBox**: runs the virtual machine Docker Machine sets up.
-
-The above installation is just a one-time thing, of course: once you've done this, you don't need to do it again, at least until Jony Ive releases a new thinner MacBook Pro.
-
-### Set Up a Docker Machine
-
-Docker only runs natively on Linux, because containers are lighter-weight than virtual machines and require the host to have a similar. To run it on a Mac, you actually need to run it inside a Linux virtual machine. Thankfully, Docker Machine makes this trivial, so you almost don't need to think about it.
-
-1. **From the command line, run `docker-machine create --driver virtualbox default`.** This creates a virtual machine named "default" that is set up for running Docker.
-2. **Run `eval "$(docker-machine env default)"`.** This sets some environment variables in your current terminal that tell Docker to connect to this virtual machine to run commands. If you want to send Docker commands from multiple terminals, you'll need to run `eval "$(docker-machine env default)"` in each terminal.
-3. **Run `docker-machine ip default` and record the IP address it gives you.** That's the IP address your Docker virtual machine is running on. That's what you'll use to access the web application later.
+The installation is just a one-time thing, of course: once you've done this, you don't need to do it again, at least until Jony Ive releases a new thinner MacBook Pro.
 
 ### Configure Docker and Docker Compose
 
-Next you need to set up the Docker containers that your application needs. Note that I said *containers*, plural: your Rails application and your Postgres database will be in two separate containers. This is one of the main advantages of a container-based infrastructure like Docker: instead of having to install multiple software packages like Rails and Postgres on one machine, you just download a container for each component you need.
+First you need to set up the Docker containers that your application needs. Note that I said *containers*, plural: your Rails application and your Postgres database will be in two separate containers. This is one of the main advantages of a container-based infrastructure like Docker: instead of having to install multiple software packages like Rails and Postgres on one machine, you just download a container for each component you need.
 
 **Note:** if you're running this repo's Rails app, these steps have already been done, so you don't need to do them. But you can take a look at the files it references to learn what's involved.
 
-4. **Create a `Dockerfile` at your project's root with a single line:** `FROM rails:onbuild`. This specifies that the container that runs your web application should use the `rails:onbuild` image. It's an image that's preconfigured to run Rails. You can learn more about it at [its Docker Hub page](https://hub.docker.com/_/rails/).
-5. **Create a `docker-compose.yml` file at your project's root with the contents below.** By default, Docker is run with command-line commands. But running multiple containers requires multiple commands, and this can get a bit tedious. Docker Compose allows you to write a single config file that specifies what containers you need, making running them a lot simpler. Your `docker-compose.yml` file should contain the following:
+1. **Create a `Dockerfile` at your project's root with a single line:** `FROM rails:onbuild`. This specifies that the container that runs your web application should use the `rails:onbuild` image. It's an image that's preconfigured to run Rails. You can learn more about it at [its Docker Hub page](https://hub.docker.com/_/rails/).
+2. **Create a `docker-compose.yml` file at your project's root with the contents below.** By default, Docker is run with command-line commands. But running multiple containers requires multiple commands, and this can get a bit tedious. Docker Compose allows you to write a single config file that specifies what containers you need, making running them a lot simpler. Your `docker-compose.yml` file should contain the following:
 
     ```yml
     db:
@@ -66,7 +53,7 @@ Next you need to set up the Docker containers that your application needs. Note 
   - `ports` exposes ports to your host machine. In this case, we need to get access to port 3000 because that's where Rails will run, and we want to expose it as port 3000 on the host. (Because we're using Docker Machine, the "host" is the Docker virtual machine, so we'll access it at the IP address we wrote down above.)
   - `links` specifies other containers that this container should have access to. In this case, we want `web` to have access to `db` so it can use the database. It will be made available from the `web` container under the hostname `db`.
 
-6. **Update your Rails `database.yml` config file to point to the Postgres container.** Your database will no longer effectively be running on localhost; the separate Docker containers act like separate servers on a private network. In `database.yml`, your `development` database should have the following entries (note that the password is blank):
+3. **Update your Rails `database.yml` config file to point to the Postgres container.** Your database will no longer effectively be running on localhost; the separate Docker containers act like separate servers on a private network. In `database.yml`, your `development` database should have the following entries (note that the password is blank):
 
     ```yml
     development:
@@ -80,10 +67,10 @@ Next you need to set up the Docker containers that your application needs. Note 
 
 Now that you have a running Docker virtual machine and a Docker Compose setup for your app, it's time to actually run your app. You use Docker Compose to run the individual Docker commands to set up the containers the way you scripted them.
 
-7. **Run `docker-compose up`, then, when it's finished, press ctrl-C.** This starts up the containers, but we don't actually want to run the app yet. We want to migrate the database first. (There is probably a better way to do this than having to ctrl-C out, but I haven't found it yet.)
-8. **Run `docker-compose run web rake db:create db:migrate` to set up your database.** If you do this before running `docker-compose up`, you may run into errors.
-9. **Run `docker-compose up` again to start your app.**
-10. **View your app by going to http://yourmachineip:3000**, where "yourmachineip" is the IP address you wrote down in step 3: usually a 192.168 address.
+4. **Run `docker-compose up`, then, when it's finished, press ctrl-C.** This starts up the containers, but we don't actually want to run the app yet. We want to migrate the database first. (There is probably a better way to do this than having to ctrl-C out, but I haven't found it yet.)
+5. **Run `docker-compose run web rake db:create db:migrate` to set up your database.** If you do this before running `docker-compose up`, you may run into errors.
+6. **Run `docker-compose up` again to start your app.**
+7. **View your app by going to <http://localhost:3000>**
 
 ## Next Steps
 

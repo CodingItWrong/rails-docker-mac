@@ -18,9 +18,7 @@ This assumes you already have a working Rails application that's `bundle install
 
 ### Install Docker
 
-First, you need to install [Docker for Mac](https://docs.docker.com/docker-for-mac/). It's currently in public beta, but is much simpler than using the full release, which isn't optimized for Mac.
-
-The installation is just a one-time thing, of course: once you've done this, you don't need to do it again, at least until Jony Ive releases a new thinner MacBook Pro.
+First, you need to install [Docker for Mac](https://docs.docker.com/docker-for-mac/). The installation is just a one-time thing, of course: once you've done this, you don't need to do it again, at least until Jony Ive releases a new thinner MacBook Pro.
 
 ### Configure Docker and Docker Compose
 
